@@ -8,7 +8,7 @@ namespace TaskManagement.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TasksController(IMediator mediator, ILogger<TasksController> logger) : ControllerBase
+public class TasksController(IMediator mediator, IServiceBusHandler serviceBusHandler) : ControllerBase
 {
     [HttpGet]
     public async Task<IEnumerable<Domain.Task>> Get(CancellationToken cancellationToken)
@@ -30,15 +30,21 @@ public class TasksController(IMediator mediator, ILogger<TasksController> logger
     }
 
     [HttpPost]
-    public async Task<Domain.Task?> Post([FromBody]Domain.Task task, CancellationToken cancellationToken)
+    public async Task<IActionResult> Post([FromBody]Domain.Task task, CancellationToken cancellationToken)
     {
-        return await mediator.Send(new AddTaskCommand(task), cancellationToken);
+        var processedViaMessageBroker = await serviceBusHandler.Send(task, cancellationToken);
+        if (!processedViaMessageBroker)
+        {
+            return BadRequest("Unable to process through message broker.");
+        }
+
+        return Ok(await mediator.Send(new AddTaskCommand(task), cancellationToken));
     }
 
     [HttpPatch]
-    public async Task<IActionResult> Patch(int id, Status taskStatus, CancellationToken cancellationToken)
+    public async Task<IActionResult> Patch(int id, Status newStatus, CancellationToken cancellationToken)
     {
-        var task = await mediator.Send(new UpdateTaskStatusCommand(id, taskStatus), cancellationToken);
+        var task = await mediator.Send(new UpdateTaskStatusCommand(id, newStatus), cancellationToken);
 
         if (task is null)
         {

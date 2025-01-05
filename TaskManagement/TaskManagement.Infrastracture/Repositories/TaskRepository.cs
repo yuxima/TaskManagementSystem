@@ -25,13 +25,13 @@ public class TaskRepository(TaskManagementDbContext dbContext) : ITaskRepository
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public async Task<Domain.Task?> UpdateStatusAsync(int id, Domain.Status status, CancellationToken cancellationToken)
+    public async Task<Domain.Task?> UpdateStatusAsync(int id, Domain.Status newStatus, CancellationToken cancellationToken)
     {
         var entity = dbContext.Tasks.FirstOrDefault(item => item.Id == id);
 
         if (entity != null)
         {
-            entity.Status = status;
+            entity.Status = newStatus;
             await dbContext.SaveChangesAsync(cancellationToken);
         }
 

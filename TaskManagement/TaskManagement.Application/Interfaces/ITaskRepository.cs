@@ -5,6 +5,6 @@ public interface ITaskRepository
     Task AddAsync(Domain.Task task, CancellationToken cancellationToken);
     Task<IList<Domain.Task>> GetAllAsync(CancellationToken cancellationToken);
     Task<Domain.Task?> GetByIdAsync(int id, CancellationToken cancellationToken);
-    Task<Domain.Task?> UpdateStatusAsync(int id, Domain.Status status, 
+    Task<Domain.Task?> UpdateStatusAsync(int id, Domain.Status newStatus, 
         CancellationToken cancellationToken);
 }

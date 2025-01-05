@@ -9,6 +9,6 @@ public class UpdateTaskStatusCommandHandler(ITaskRepository taskRepository)
 {
     public async Task<Task?> Handle(UpdateTaskStatusCommand request, CancellationToken cancellationToken)
     {
-        return await taskRepository.UpdateStatusAsync(request.Id, request.Status, cancellationToken);
+        return await taskRepository.UpdateStatusAsync(request.Id, request.NewStatus, cancellationToken);
     }
 }
