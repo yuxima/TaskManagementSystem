@@ -1,12 +1,12 @@
 ﻿using MediatR;
-using Task = TaskManagement.Domain.Task;
+using TaskManagement.Application.Interfaces;
 
 namespace TaskManagement.Application.Queries;
 
-public class GetTaskByIdQueryHandler : IRequestHandler<GetTaskByIdQuery, Domain.Task?>
+public class GetTaskByIdQueryHandler(ITaskRepository taskRepository) : IRequestHandler<GetTaskByIdQuery, Domain.Task?>
 {
-    public Task<Task?> Handle(GetTaskByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Domain.Task?> Handle(GetTaskByIdQuery request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await taskRepository.GetByIdAsync(request.Id, cancellationToken);
     }
 }

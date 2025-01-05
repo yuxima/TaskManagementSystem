@@ -2,6 +2,6 @@
 
 namespace TaskManagement.Application.Queries;
 
-public class GetTaskByIdQuery : IRequest<Domain.Task?>
+public record GetTaskByIdQuery(int Id) : IRequest<Domain.Task?>
 {
 }
